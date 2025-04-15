@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SRM Baseline Comparison – Neuron 373 + 2202</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        h1, h2, h3 { color: #333; }
+        code { background-color: #f4f4f4; padding: 2px 5px; border-radius: 3px; }
+        ul, p { max-width: 800px; }
+    </style>
+</head>
+<body>
+    <h1>SRM Baseline Comparison: Neuron 373 + 2202</h1>
+
+    <h2>🔬 Experiment Overview</h2>
+    <p>
+        This document summarizes a comparative experiment analyzing resonance in GPT-2 Small’s MLP activation space (3072D) with and without intervention on Neuron 373. The purpose was to determine whether observed alignment patterns (in the SRM spotlight plane defined by Neurons 373 and 2202) are a natural feature of the model or a causal result of clamping Neuron 373.
+    </p>
+
+    <h2>🧪 Experimental Method</h2>
+    <p><strong>Baseline Run (No Intervention):</strong></p>
+    <ul>
+        <li>Prompts: <code>promptsv3.txt</code> and <code>promptsv4.txt</code></li>
+        <li>No neuron clamping was applied.</li>
+        <li>For each prompt:
+            <ul>
+                <li>A 50-token continuation was generated.</li>
+                <li>Activation vectors were captured at <code>hook_mlp_post</code> (Layer 11, 3072D).</li>
+                <li>The activation vectors were averaged per prompt to produce a [3072] mean vector.</li>
+            </ul>
+        </li>
+        <li>These vectors were passed through the same SRM sweep method used in the intervention condition:
+            <ul>
+                <li>Spotlight vector swept through the 373+2202 plane (0°–360°).</li>
+                <li>Cosine similarity to spotlight measured at each angle.</li>
+                <li>Two metrics collected per angle:
+                    <ul>
+                        <li>Mean cosine similarity (blue curve)</li>
+                        <li>Count of vectors with cosine similarity > 0.9 (red curve)</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>📊 Key Observations</h2>
+
+    <h3>Baseline (No Intervention)</h3>
+    <ul>
+        <li><strong>Red curve (count > 0.9):</strong> completely flat at 0 — no strong alignments with any spotlight direction.</li>
+        <li><strong>Blue curve (mean cosine sim):</strong> sinusoidal pattern with:
+            <ul>
+                <li>Peak around 310° (+0.011)</li>
+                <li>Trough around 130° (−0.010)</li>
+            </ul>
+            Indicates a natural directional preference in the average latent space representation.
+        </li>
+    </ul>
+
+    <h3>Intervention (Neuron 373 Clamped)</h3>
+    <ul>
+        <li><strong>Red curve:</strong> sharp spikes at 0° and 180° — high alignment with Neuron 373's axis caused by the intervention.</li>
+        <li><strong>Blue curve:</strong> peak shifted to ~270°, trough to ~90°.
+            <ul>
+                <li>Indicates a directional drift toward −e_2202 (negative Neuron 2202 direction).</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>📈 Interpretation</h2>
+
+    <h3>First-Order Effect (Direct Alignment)</h3>
+    <p>
+        The high similarity spikes at 0° and 180° are clear signs that intervention on Neuron 373 causes a subset of outputs to align extremely closely with that neuron’s axis. This was not observed in the baseline, proving direct causal influence.
+    </p>
+
+    <h3>Second-Order Effect (Rotational Drift)</h3>
+    <p>
+        More subtly, the intervention shifted the <strong>mean directional alignment</strong> of the vector field away from its natural peak (310°) to ~270°. This is not a direct alignment with Neuron 373, but a <em>rotation of the bulk field</em> toward the negative direction of Neuron 2202 — a known co-activator.
+    </p>
+
+    <p>
+        This implies that clamping Neuron 373 doesn’t just drive alignment with its own axis, it also <strong>reorients the latent geometry</strong> of neighboring neuron representations. This kind of second-order influence is rare to catch cleanly and suggests Neuron 373 may play a role in setting the orientation of conceptual space — not just activating within it.
+    </p>
+
+    <h2>🔁 Reproducibility Notes</h2>
+    <ul>
+        <li>Baseline vectors saved as:
+            <ul>
+                <li><code>results_v3_no_intervention_mean_vectors_3072d.npz</code></li>
+                <li><code>results_v4_no_intervention_mean_vectors_3072d.npz</code></li>
+            </ul>
+        </li>
+        <li>Compared against:
+            <ul>
+                <li><code>results_v3_len50_mean_vectors_3072d.npz</code></li>
+                <li><code>results_v4_len50_mean_vectors_3072d.npz</code></li>
+            </ul>
+        </li>
+        <li>SRM sweep was performed using <code>neuron_373 + 2202</code> as spotlight plane.</li>
+        <li>Plots generated using custom sweep code per <code>srm_sweep_373_2202_spec.md</code>.</li>
+    </ul>
+
+    <h2>🧭 Next Steps</h2>
+    <ul>
+        <li>Run SRM with lower thresholds (e.g., 0.5, 0.3, 0.1) to detect more diffuse alignment differences.</li>
+        <li>Generate “difference plots” to isolate where drift occurred most strongly.</li>
+        <li>Explore other neuron pairings for second-order influence.</li>
+        <li>Trace extreme alignment vectors to their originating prompt+sweep values.</li>
+    </ul>
+</body>
+</html>

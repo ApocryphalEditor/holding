@@ -1,0 +1,67 @@
+
+# Baseline Capture: Zero-Intervention Prompt Runs (3072D MLP Vectors)
+
+## 🎯 Objective
+
+Establish a baseline reference set of activation vectors in GPT-2 Small (Layer 11, MLP output space) by running the same prompts used in the Neuron 373 intervention experiments — but with no neuron clamping or activation modification.
+
+This baseline will allow comparison with prior intervention-based SRM sweeps and help identify whether directional drift observed in those runs is a genuine effect of Neuron 373 manipulation, or a natural bias in prompt dynamics.
+
+---
+
+## 🧪 Input Files
+
+- `promptsv3.txt`
+- `promptsv4.txt`
+
+---
+
+## 🛠️ Script Functionality
+
+A new variant of the previous sweep script should be created, e.g., `neuron_batch_mlp_post_capture_baseline.py`.
+
+**It will:**
+1. Load each prompt from the `.txt` file
+2. Run the model *without any neuron intervention* (no `run_with_hooks`)
+3. Generate a completion of 50 tokens
+4. Capture the full `[tokens, 3072]` activation matrix at `hook_mlp_post` for Layer 11
+5. Average over the token dimension → shape: `[3072]` per prompt
+6. Save to a `.npz` file with same format as previous runs:
+   - Example: `results_v3_no_intervention_mean_vectors_3072d.npz`
+
+---
+
+## ⚙️ Parameters
+
+- Generation length: 50 tokens
+- Use same model, tokenizer, and pipeline structure as prior experiments
+- Output log and `.md` file optional but useful for consistency
+
+---
+
+## 📦 Expected Output
+
+Two `.npz` files:
+- `results_v3_no_intervention_mean_vectors_3072d.npz`
+- `results_v4_no_intervention_mean_vectors_3072d.npz`
+
+Each should contain:
+- One `[3072]` vector per prompt
+- Stored under the prompt key
+
+---
+
+## 🔍 Follow-Up Use
+
+These vectors will be swept through the same SRM 373+2202 spotlight plane to produce a **baseline resonance profile**.
+
+It will be directly compared against:
+- `results_v3_len50_mean_vectors_3072d.npz`
+- `results_v4_len50_mean_vectors_3072d.npz`
+
+---
+
+## ✨ Importance
+
+This is a crucial control to determine whether the resonance and directional drift observed during the Neuron 373 interventions are truly caused by those interventions — or if similar drift exists under unmodified conditions.
+
