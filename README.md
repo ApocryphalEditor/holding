@@ -1,41 +1,87 @@
 
 # Neuron 373 Interpretability Experiments (GPT-2 Small)
 
-This repository contains documentation from a series of experiments focused on Neuron 373 in Layer 11 of GPT-2 Small. The work explores how this neuron's behavior manifests across different internal representation spaces — specifically the 768-dimensional residual stream (`resid_post`) and the 3072-dimensional MLP post-activation space (`hook_post`).
-
-## 🧪 Ongoing Goal
-
-To understand how architectural decisions (e.g. projection from MLP to residual stream) affect interpretability outcomes like:
-- Neuron alignment
-- SRM pairing
-- Conceptual drift
-- Co-activation structure
+This repository documents a series of interpretability experiments centered on **Neuron 373 in Layer 11** of GPT-2 Small, across both the 768-dimensional residual stream (`resid_post`) and the 3072-dimensional MLP output space (`hook_post`).
 
 ---
 
-## 📁 Documentation
+## 🧠 Primary Goal
 
-Rendered versions of the HTML documentation are hosted via GitHub Pages:
+To examine how clamping and projection affect:
 
-### 👉 [`averaging_justification_3072d.html`](https://apocryphaleditor.github.io/holding/averaging_justification_3072d.html)
-Explains why we average `[tokens, 3072]` activations into `[3072]` mean vectors per run. Clarifies that this does not distort dimensionality, and is valid for correlation comparisons against previous 768D work.
-
-### 👉 [`neuron_373_768d_pairings_summary.html`](https://apocryphaleditor.github.io/holding/neuron_373_768d_pairings_summary.html)
-Summarizes the original 768D residual stream experiment, which identified co-activators and antagonists of Neuron 373 using projected vectors. Used as the baseline for comparing native-space results.
-
-### 👉 [`neuron_373_correlation_comparison_768d_vs_3072d.html`](https://apocryphaleditor.github.io/holding/neuron_373_correlation_comparison_768d_vs_3072d.html)
-Documents a key intermediate finding: comparing 373’s top aligned neurons in 768D vs 3072D reveals discrepancies caused by projection distortion. Establishes the need for MLP-native SRM analysis.
+- Neuron alignment and co-activation
+- SRM (Spotlight Resonance Mapping) patterns
+- Directional drift and latent field rotation
+- Interpretability across dimensional boundaries
 
 ---
 
-## 🔄 Status
+## 🧪 Experiment Categories
 
-This folder is a **holding space** for interpretability results in-progress — including writeups, analysis artifacts, and correlation comparisons. It may evolve or be folded into a larger repo later.
+### 1. **MLP-Space SRM Spotlight Analysis**
 
-Suggestions, replications, and forks welcome.
+These experiments use cosine projections in the 373+2202 plane of the 3072D MLP space, comparing clamped vs unclamped conditions.
+
+- 👉 [`docu/srm_multi_threshold_sweep_v3_v4_FINAL.html`](https://apocryphaleditor.github.io/holding/docu/srm_multi_threshold_sweep_v3_v4_FINAL.html)  
+  Final multi-threshold SRM sweep results and interpretation (with embedded plots).
+
+- 👉 [`docu/srm_results_baseline_comparison_373_2202.html`](https://apocryphaleditor.github.io/holding/docu/srm_results_baseline_comparison_373_2202.html)  
+  Earlier summary showing baseline vs intervention comparison in simpler form.
+
+- 👉 [`docu/baseline_capture_spec_zero_intervention.html`](https://apocryphaleditor.github.io/holding/docu/baseline_capture_spec_zero_intervention.html)  
+  Experimental spec for how the baseline MLP post-activation vectors were collected.
+
+---
+
+### 2. **Dimensionality & Projection Distortion**
+
+These documents trace the difference in interpretability between residual-stream and native MLP representations.
+
+- 👉 [`docu/averaging_justification_3072d.html`](https://apocryphaleditor.github.io/holding/docu/averaging_justification_3072d.html)  
+  Justifies using averaged `[tokens, 3072] → [3072]` mean vectors for SRM comparisons.
+
+- 👉 [`docu/neuron_373_768d_pairings_summary.html`](https://apocryphaleditor.github.io/holding/docu/neuron_373_768d_pairings_summary.html)  
+  Residual stream-based pairing experiment, identifies top co-activators and antagonists.
+
+- 👉 [`docu/neuron_373_correlation_comparison_768d_vs_3072d.html`](https://apocryphaleditor.github.io/holding/docu/neuron_373_correlation_comparison_768d_vs_3072d.html)  
+  Shows projection distortion when comparing neuron similarity rankings in 768D vs 3072D.
+
+---
+
+## 🗃️ Code & Data
+
+### Code
+All scripts used in SRM analysis and vector capture are in `/code/`:
+
+- `capture_baseline_mlp_post.py` — captures [tokens, 3072] activations with no intervention  
+- `run_srm_sweep.py` — original SRM sweeper (single threshold)  
+- `run_srm_sweep_multi_threshold.py` — multi-threshold sweep analyzer with plotting
+
+### Prompts
+The prompts used for generation and activation capture:
+
+- `promptsv3.txt` — general reasoning and syntax tasks  
+- `promptsv4.txt` — phrases from OpenAI Neuron Viewer for Neuron 373
+
+---
+
+## 🌀 Reproducibility Notes
+
+All results were generated with:
+
+- Model: `gpt2` via `transformer_lens`
+- Hook point: `blocks.11.mlp.hook_post`
+- Dimension: 3072D (MLP space)
+- Generation length: 50 tokens
+- Output: mean activation vectors per prompt
+- SRM plane: Neuron 373 + Neuron 2202
+- Angular sweep: 360 degrees, 1° steps
+- Thresholds: 0.7, 0.5, 0.3, 0.1
 
 ---
 
 ## 📬 Contact
 
 Maintained by [@ApocryphalEditor](https://github.com/ApocryphalEditor)
+
+Feel free to fork, test, or contribute ideas and interpretations.
