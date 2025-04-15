@@ -13,15 +13,17 @@ To understand how architectural decisions (e.g. projection from MLP to residual 
 
 ---
 
-## 📁 File Overview
+## 📁 Documentation
 
-### [`averaging_justification_3072d.html`](./averaging_justification_3072d.html)
+Rendered versions of the HTML documentation are hosted via GitHub Pages:
+
+### 👉 [`averaging_justification_3072d.html`](https://apocryphaleditor.github.io/holding/averaging_justification_3072d.html)
 Explains why we average `[tokens, 3072]` activations into `[3072]` mean vectors per run. Clarifies that this does not distort dimensionality, and is valid for correlation comparisons against previous 768D work.
 
-### [`neuron_373_768d_pairings_summary.html`](./neuron_373_768d_pairings_summary.html)
+### 👉 [`neuron_373_768d_pairings_summary.html`](https://apocryphaleditor.github.io/holding/neuron_373_768d_pairings_summary.html)
 Summarizes the original 768D residual stream experiment, which identified co-activators and antagonists of Neuron 373 using projected vectors. Used as the baseline for comparing native-space results.
 
-### [`neuron_373_correlation_comparison_768d_vs_3072d.html`](./neuron_373_correlation_comparison_768d_vs_3072d.html)
+### 👉 [`neuron_373_correlation_comparison_768d_vs_3072d.html`](https://apocryphaleditor.github.io/holding/neuron_373_correlation_comparison_768d_vs_3072d.html)
 Documents a key intermediate finding: comparing 373’s top aligned neurons in 768D vs 3072D reveals discrepancies caused by projection distortion. Establishes the need for MLP-native SRM analysis.
 
 ---
