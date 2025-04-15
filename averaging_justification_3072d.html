@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Token Averaging Justification (3072D MLP Space)</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        h1, h2, h3 { color: #333; }
+        p { max-width: 800px; }
+        code { background-color: #f0f0f0; padding: 2px 4px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>Justification for Token Averaging in 3072D MLP Space</h1>
+
+    <p><strong>Context:</strong> This experiment captures <code>hook_post</code> activations from GPT-2 Small Layer 11, representing the 3072-dimensional output of the MLP block. The goal is to analyze native neuron-space dynamics without the distortion introduced by projection into the 768D residual stream (<code>resid_post</code>).</p>
+
+    <h2>Why Token Averaging Is Used</h2>
+    <p>
+        Each sweep run produces a matrix of shape <code>[num_tokens, 3072]</code> — one activation vector per generated token. To enable correlation analysis and comparison with prior 768D results, we compute the <strong>mean vector across tokens</strong>:
+    </p>
+    <pre>mean_vector = activations.mean(axis=0)  # shape: [3072]</pre>
+
+    <p>This averaging does <strong>not</strong> project or compress the data into a lower-dimensional space. The result is still a full 3072D vector, preserving the native neuron basis.</p>
+
+    <h2>What Averaging Does and Doesn't Do</h2>
+    <ul>
+        <li>✅ <strong>Preserves 3072D representation space</strong> — we're still analyzing the native neuron activations.</li>
+        <li>✅ <strong>Matches the previous 768D analysis</strong> structure — enabling valid comparisons.</li>
+        <li>✅ <strong>Captures prompt+sweep level signal</strong> — a stable signature of neuron activity per run.</li>
+        <li>❌ <strong>Does not retain per-token temporal dynamics</strong> — e.g. rising/falling activation mid-sequence.</li>
+        <li>❌ <strong>Not suitable for SRM per-token spotlight tracking</strong> — averaging smooths angular variation.</li>
+    </ul>
+
+    <h2>Conclusion</h2>
+    <p>
+        Averaging over tokens is valid and appropriate for the current phase of this experiment: identifying neuron-to-neuron correlation patterns and comparing them to prior residual stream results. The full per-token data is preserved in the original <code>.npz</code> files for future sequence-level or SRM-specific analysis.
+    </p>
+</body>
+</html>

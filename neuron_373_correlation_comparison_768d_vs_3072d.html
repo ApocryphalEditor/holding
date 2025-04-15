@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comparison of 768D vs 3072D Neuron 373 Pairings</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        h1, h2, h3 { color: #333; }
+        table, th, td { border: 1px solid #aaa; border-collapse: collapse; padding: 8px; }
+        th { background-color: #eee; }
+        ul { max-width: 800px; }
+        p { max-width: 800px; }
+    </style>
+</head>
+<body>
+    <h1>Comparison of Neuron 373 Pairings in 768D vs 3072D Space</h1>
+
+    <h2>📅 Experiment Context</h2>
+    <p>
+        This comparison is part of a broader interpretability experiment investigating how Neuron 373 behaves under controlled interventions in GPT-2 Small (Layer 11).
+        Two sets of sweep experiments were run with <strong>promptsv3.txt</strong> and <strong>promptsv4.txt</strong>, each generating 50 new tokens per prompt, across a range of neuron 373 intervention values (−20 to +20).
+        Vectors were captured from two locations:
+    </p>
+    <ul>
+        <li><strong>768D:</strong> <code>resid_post</code> residual stream (after projection)</li>
+        <li><strong>3072D:</strong> <code>hook_post</code> MLP output (before projection)</li>
+    </ul>
+
+    <h2>🎯 Objective</h2>
+    <p>
+        Identify top co-activators and antagonists of Neuron 373 in both spaces and determine whether alignment relationships are preserved or altered by the MLP projection step.
+    </p>
+
+    <h2>✅ Results Summary</h2>
+
+    <h3>Original 768D Top Pairings</h3>
+    <table>
+        <tr><th>Type</th><th>Neuron Index</th><th>Correlation (768D)</th></tr>
+        <tr><td>Co-activator</td><td>266</td><td>0.942</td></tr>
+        <tr><td>Co-activator</td><td>87</td><td>0.932</td></tr>
+        <tr><td>Co-activator</td><td>64</td><td>0.925</td></tr>
+        <tr><td>Co-activator</td><td>480</td><td>0.917</td></tr>
+        <tr><td>Co-activator</td><td>442</td><td>0.745</td></tr>
+        <tr><td>Antagonist</td><td>481</td><td>-0.971</td></tr>
+        <tr><td>Antagonist</td><td>447</td><td>-0.854</td></tr>
+        <tr><td>Antagonist</td><td>728</td><td>-0.720</td></tr>
+        <tr><td>Antagonist</td><td>421</td><td>-0.718</td></tr>
+        <tr><td>Antagonist</td><td>635</td><td>-0.716</td></tr>
+        <tr><td>Antagonist</td><td>507</td><td>-0.716</td></tr>
+    </table>
+
+    <h3>Findings in 3072D MLP Space</h3>
+    <ul>
+        <li><strong>Neuron 266</strong> remained strongly correlated with 373 → likely a true co-activator.</li>
+        <li>Other 768D co-activators (e.g., 64, 87, 480) showed lower correlations in 3072D → may have been amplified by projection.</li>
+        <li>Most 768D antagonists (e.g., 481, 447) still showed negative correlations → some conflict axes appear robust.</li>
+        <li><strong>New highly correlated neurons</strong> appeared in 3072D (e.g., Neuron 2202, 1435, 758) → invisible in 768D.</li>
+    </ul>
+
+    <h2>🧠 Interpretation</h2>
+    <p>
+        This comparison confirms that analyzing neuron behavior in projected space can distort or emphasize certain relationships that don't reflect actual co-activation. By moving to 3072D MLP space, we’re now seeing the true internal dynamics of Neuron 373.
+    </p>
+
+    <h2>🔁 Next Steps</h2>
+    <ul>
+        <li>Use top 3072D pairs to define SRM spotlight planes</li>
+        <li>Compare drift patterns across 768D and 3072D</li>
+        <li>Visualize correlation matrix delta between spaces</li>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Neuron 373 Pairing Summary (768D Residual Stream)</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        h1, h2, h3 { color: #333; }
+        table { border-collapse: collapse; width: 60%; margin-bottom: 30px; }
+        th, td { border: 1px solid #999; padding: 8px; text-align: center; }
+        th { background-color: #eee; }
+        p { max-width: 800px; }
+    </style>
+</head>
+<body>
+    <h1>Neuron 373 Pairing Summary</h1>
+    <p>This document summarizes the neuron pairings derived from the <strong>original intervention sweep experiment</strong> run on GPT-2 Small (Layer 11, Neuron 373), using the <strong>768-dimensional residual stream</strong> (<code>resid_post</code>) output.</p>
+
+    <h2>📅 Experiment Context</h2>
+    <p>
+        The sweep was conducted across two prompt sets:
+        <ul>
+            <li><strong>v3</strong>: Custom prompts designed to test rhetorical risk, recursion, abstraction.</li>
+            <li><strong>v4</strong>: Prompts scraped from OpenAI's Neuron Viewer associated with Neuron 373.</li>
+        </ul>
+        For each prompt, Neuron 373 was clamped to a range of values (−20 to +20), and the model generated 50 new tokens.
+        Activation vectors were captured from the <code>resid_post</code> hook at Layer 11. These vectors were then averaged across tokens to produce one [768] vector per prompt+sweep combo.
+    </p>
+
+    <h2>🧠 Purpose of Analysis</h2>
+    <p>
+        The goal was to identify which neurons in the residual stream showed the strongest alignment (positive or negative correlation) with Neuron 373 across all prompts and intervention values.
+        This was used to identify candidate <strong>SRM spotlight planes</strong> for future geometric analysis, and to understand the emergent behavior of Neuron 373 in 768D space.
+    </p>
+
+    <h2>Top Positively Correlated Neurons</h2>
+    <table>
+        <tr><th>Neuron</th><th>Correlation</th><th>Suggested Use</th></tr>
+        <tr><td>266</td><td>0.942</td><td>SRM Plane</td></tr>
+        <tr><td>87</td><td>0.932</td><td>SRM Plane</td></tr>
+        <tr><td>64</td><td>0.925</td><td>SRM Plane</td></tr>
+        <tr><td>480</td><td>0.917</td><td>SRM Plane</td></tr>
+        <tr><td>442</td><td>0.745</td><td>SRM Plane</td></tr>
+    </table>
+
+    <h2>Top Negatively Correlated Neurons</h2>
+    <table>
+        <tr><th>Neuron</th><th>Correlation</th><th>Suggested Use</th></tr>
+        <tr><td>481</td><td>-0.971</td><td>SRM Antagonist Axis</td></tr>
+        <tr><td>447</td><td>-0.854</td><td>SRM Antagonist Axis</td></tr>
+        <tr><td>728</td><td>-0.720</td><td>SRM Antagonist Axis</td></tr>
+        <tr><td>421</td><td>-0.718</td><td>SRM Antagonist Axis</td></tr>
+        <tr><td>635</td><td>-0.716</td><td>SRM Antagonist Axis</td></tr>
+        <tr><td>507</td><td>-0.716</td><td>SRM Antagonist Axis</td></tr>
+    </table>
+
+    <h2>🔁 Next Phase</h2>
+    <p>
+        A new version of this experiment is now being run using the <code>hook_post</code> output (3072D MLP activation space) to capture raw neuron activations prior to projection into the residual stream. This summary will serve as a baseline for comparing whether neuron correlation and alignment patterns persist across dimensional spaces or are artefacts of projection.
+    </p>
+</body>
+</html>
